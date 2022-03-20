@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/Selahattinn/bitaksi-matching/internal/api"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 )
@@ -15,15 +16,13 @@ type Config struct {
 	// For HTTPS
 	//CertFile      string `yaml:"cert_file"`
 	//KeyFile       string `yaml:"key_file"`
-
-	//Service *service.Config `yaml:"service"`
+	API *api.Config `yaml:"api"`
 }
 
 // Instance represents an instance of the server
 type Instance struct {
-	Config *Config
-	//API    *api.API
-	//Service    service.Service
+	Config     *Config
+	API        *api.API
 	httpServer *http.Server
 }
 
@@ -38,13 +37,20 @@ func NewInstance(cfg *Config) *Instance {
 func (i *Instance) Start() {
 	var router = mux.NewRouter()
 
+	// Initialize API
+	api, err := api.New(i.Config.API, router)
+	if err != nil {
+		logrus.WithError(err).Fatal("Could not initialize API")
+	}
+	i.API = api
+
 	// Startup the HTTP Server in a way that we can gracefully shut it down again
 	i.httpServer = &http.Server{
 		Addr:    i.Config.ListenAddress,
 		Handler: router,
 	}
 
-	err := i.httpServer.ListenAndServe()
+	err = i.httpServer.ListenAndServe()
 	if err != http.ErrServerClosed {
 		logrus.WithError(err).Error("HTTP Server stopped unexpected")
 		i.Shutdown()

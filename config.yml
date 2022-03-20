@@ -1,0 +1,3 @@
+host: :8080
+api:
+  signing_secret: "secret-pass"
