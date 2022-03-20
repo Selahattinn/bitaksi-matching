@@ -8,7 +8,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/bitaksi/bitaksi-matching/internal/server"
+	"github.com/Selahattinn/bitaksi-matching/internal/server"
+	"github.com/Selahattinn/bitaksi-matching/internal/version"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
 )
@@ -16,7 +17,7 @@ import (
 var (
 	versionFlag    = flag.Bool("version", false, "Show version information.")
 	debugFlag      = flag.Bool("debug", false, "Show debug information.")
-	logFileFlag    = flag.String("log", "bitaksi-matching", "Path to the log file.")
+	logFileFlag    = flag.String("log", "bitaksi-matching.log", "Path to the log file.")
 	configFileFlag = flag.String("config", "config.yml", "Path to the configuration file.")
 )
 
