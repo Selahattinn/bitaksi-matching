@@ -9,6 +9,16 @@ import (
 	"github.com/Selahattinn/bitaksi-matching/internal/model"
 )
 
+// FindDriver godoc
+// @Summary      Finds a driver
+// @Description  Get driver by GeoPoint
+// @Tags         GeoPoints
+// @Accept       json
+// @Produce      json
+// @Param        GeoPoint   body      model.GeoPoint  true  "An GeoPoint object with json format"
+// @Success      200  {object}  model.GeoPoint
+// @Failure      404  {object}  response.Error
+// @Router       /findDriver [post]
 func (a *API) FindDriver(w http.ResponseWriter, r *http.Request) {
 	var geoPoint model.GeoPoint
 	err := json.NewDecoder(r.Body).Decode(&geoPoint)

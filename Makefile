@@ -72,4 +72,4 @@ test:
 
 swagger: 
 	go get -u github.com/swaggo/swag/cmd/swag
-	swag init -g internal/api/api.go 
+	swag init --exclude ./cmd -g ./internal/api/api.go 
