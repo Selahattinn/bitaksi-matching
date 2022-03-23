@@ -8,7 +8,7 @@ BRANCH    ?= $(shell git rev-parse --abbrev-ref HEAD)
 BUILDUSER ?= $(shell id -un)
 BUILDTIME ?= $(shell date '+%Y%m%d-%H:%M:%S')
 
-.PHONY: build build-darwin-amd64 build-linux-amd64 build-windows-amd64 clean release test
+.PHONY: build build-darwin-amd64 build-linux-amd64 build-windows-amd64 clean release test swagger
 
 build: 
 	for target in $(WHAT); do \
@@ -69,3 +69,7 @@ release: build-darwin-amd64 build-linux-amd64 build-windows-amd64
 
 test:
 	go test ./...
+
+swagger: 
+	go get -u github.com/swaggo/swag/cmd/swag
+	swag init -g internal/api/api.go 
