@@ -72,7 +72,6 @@ func (a *API) authMiddleware(next http.HandlerFunc) http.HandlerFunc {
 		if ok && token.Valid {
 			authenticated := claims["authenticated"].(string)
 			if authenticated != "true" {
-				fmt.Println(authenticated)
 				w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 				w.WriteHeader(http.StatusUnauthorized)
 				return
