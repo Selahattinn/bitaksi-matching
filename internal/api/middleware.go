@@ -64,7 +64,6 @@ func (a *API) authMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			return []byte(a.config.SigningSecret), nil
 		})
 		if err != nil {
-			fmt.Println("222222222222")
 			w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 			w.WriteHeader(http.StatusUnauthorized)
 			return
