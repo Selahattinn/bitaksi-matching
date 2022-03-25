@@ -20,6 +20,7 @@ import (
 
 	_ "github.com/Selahattinn/bitaksi-matching/docs"
 	"github.com/Selahattinn/bitaksi-matching/internal/api/response"
+	"github.com/Selahattinn/bitaksi-matching/internal/service"
 	"github.com/gorilla/mux"
 	httpSwagger "github.com/swaggo/http-swagger"
 )
@@ -27,20 +28,21 @@ import (
 // API configuration
 type Config struct {
 	SigningSecret string `yaml:"signing_secret"`
-	SearchRadius  int    `yaml:"search_radius"`
 }
 
 // API represents the structure of the API
 type API struct {
-	Router *mux.Router
-	config *Config
+	Router  *mux.Router
+	config  *Config
+	Service service.Service
 }
 
 // New returns the api settings
-func New(cfg *Config, router *mux.Router) (*API, error) {
+func New(cfg *Config, router *mux.Router, svc service.Service) (*API, error) {
 	api := &API{
-		config: cfg,
-		Router: router,
+		config:  cfg,
+		Router:  router,
+		Service: svc,
 	}
 
 	// Endpoint for browser preflight requests

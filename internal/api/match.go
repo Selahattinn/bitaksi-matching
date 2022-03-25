@@ -10,28 +10,36 @@ import (
 )
 
 // Match godoc
-// @Summary      Finds a driver
-// @Description  Get driver by GeoPoint
+// @Summary      Match a driver
+// @Description  Get rider by GeoPoint and find the most suitable driver
 // @Tags         Match
 // @Accept       json
 // @Produce      json
 // @Param        GeoPoint   body      model.GeoPoint  true  "An GeoPoint object with json format"
 // @Success      200  {object}  model.GeoPoint "Driver's geoPoint"
-// @Failure      404  {object}  response.Error "Not found"
+// @Failure      404  "Not found"
 // @Router       /match [post]
 func (a *API) Match(w http.ResponseWriter, r *http.Request) {
-	var geoPoint model.GeoPoint
-	err := json.NewDecoder(r.Body).Decode(&geoPoint)
+	var riderGeoPoint model.GeoPoint
+	err := json.NewDecoder(r.Body).Decode(&riderGeoPoint)
 	if err != nil {
 		response.Errorf(w, r, fmt.Errorf("error getting GeoPoint info: %v", err), http.StatusNotFound, "")
 		return
 	}
 
 	// Valide geoPoint
-	err = geoPoint.Validate()
+	err = riderGeoPoint.Validate()
 	if err != nil {
 		response.Errorf(w, r, fmt.Errorf("error getting Validating geoPoint: %v", err), http.StatusNotFound, "")
 		return
 	}
+
+	//Find Rider
+	driver, err := a.Service.GetMatchService().FindDriver(riderGeoPoint)
+	if err != nil {
+		response.Errorf(w, r, fmt.Errorf("error getting Driver: %v", err), http.StatusNotFound, "")
+		return
+	}
+	response.Write(w, r, driver)
 
 }

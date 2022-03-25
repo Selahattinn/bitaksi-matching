@@ -63,7 +63,11 @@ func main() {
 	}
 
 	// Create server instance
-	instance := server.NewInstance(&cfg)
+	instance, err := server.NewInstance(&cfg)
+	if err != nil {
+		logrus.WithError(err).Fatal("Could not initialize server")
+		os.Exit(0)
+	}
 
 	// Interrupt handler
 	go func() {
