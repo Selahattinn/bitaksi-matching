@@ -12,7 +12,10 @@
 
 // @host      localhost:8080
 // @BasePath  /api/v1
-
+// @SecurityDefinitions.ApiKey Bearer
+// @in header
+// @name Authorization
+// @type apiKey
 package api
 
 import (

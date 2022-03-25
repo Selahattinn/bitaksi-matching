@@ -16,9 +16,11 @@ import (
 // @Accept       json
 // @Produce      json
 // @Param        GeoPoint   body      model.GeoPoint  true  "An GeoPoint object with json format"
-// @Success      200  {object}  model.GeoPoint "Driver's geoPoint"
+// @Success      200  {object}  model.SearchResult "Result of the search"
 // @Failure      404  "Not found"
+// @Failure      401  "UnAuthorized"
 // @Router       /match [post]
+// @Security Bearer
 func (a *API) Match(w http.ResponseWriter, r *http.Request) {
 	var riderGeoPoint model.GeoPoint
 	err := json.NewDecoder(r.Body).Decode(&riderGeoPoint)

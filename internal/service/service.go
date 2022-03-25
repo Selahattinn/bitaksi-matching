@@ -3,8 +3,9 @@ package service
 import "github.com/Selahattinn/bitaksi-matching/internal/service/match"
 
 type Config struct {
-	SearchRadius  int    `yaml:"search_radius"`
-	DriverAPIAddr string `yaml:"driver_api_addr"`
+	MaxDistance   float64 `yaml:"max_distance"`
+	DriverAPIAddr string  `yaml:"driver_api_addr"`
+	DriverAPIKey  string  `yaml:"driver_api_key"`
 }
 
 type Service interface {

@@ -10,7 +10,7 @@ type Provider struct {
 }
 
 func NewProvider(cfg *Config) (*Provider, error) {
-	matchService, err := match.NewService(cfg.DriverAPIAddr, cfg.SearchRadius)
+	matchService, err := match.NewService(cfg.DriverAPIAddr, cfg.MaxDistance, cfg.DriverAPIKey)
 	if err != nil {
 		return nil, err
 	}

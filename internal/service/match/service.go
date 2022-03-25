@@ -16,17 +16,19 @@ var (
 
 type Service struct {
 	DriverAPIAddr string
-	SearchRadius  int
+	MaxDistance   float64
+	DriverAPIKey  string
 }
 
-func NewService(driverAPIAddr string, searchRadius int) (*Service, error) {
+func NewService(driverAPIAddr string, maxDistance float64, driverAPIKey string) (*Service, error) {
 	return &Service{
 		DriverAPIAddr: driverAPIAddr,
-		SearchRadius:  searchRadius,
+		MaxDistance:   maxDistance,
+		DriverAPIKey:  driverAPIKey,
 	}, nil
 }
 
-func (s *Service) FindDriver(rider model.GeoPoint) (*model.DriverInfo, error) {
+func (s *Service) FindDriver(rider model.GeoPoint) (*model.SearchResult, error) {
 	suitableDrivers, err := s.findSuitableDrivers(rider)
 	if err != nil {
 		return nil, err
@@ -41,17 +43,17 @@ func (s *Service) FindDriver(rider model.GeoPoint) (*model.DriverInfo, error) {
 	return nil, ErrDriverNotFound
 }
 
-func (s *Service) findSuitableDrivers(rider model.GeoPoint) ([]*model.DriverInfo, error) {
+func (s *Service) findSuitableDrivers(rider model.GeoPoint) ([]*model.SearchResult, error) {
 
 	// Anonymous for request body
-	req := struct {
+	reqData := struct {
 		Rider  model.GeoPoint `json:"rider"`
-		Radius int            `json:"radius"`
+		Radius float64        `json:"max_distance"`
 	}{
 		Rider:  rider,
-		Radius: s.SearchRadius,
+		Radius: s.MaxDistance,
 	}
-	rider_data, err := json.Marshal(req)
+	rider_data, err := json.Marshal(reqData)
 
 	if err != nil {
 		logrus.WithError(err).Error("error marshalling rider data")
@@ -59,9 +61,15 @@ func (s *Service) findSuitableDrivers(rider model.GeoPoint) ([]*model.DriverInfo
 	}
 
 	// make post request to driver API
-	resp, err := http.Post(s.DriverAPIAddr, "application/json",
-		bytes.NewBuffer(rider_data))
+	request, err := http.NewRequest("POST", s.DriverAPIAddr, bytes.NewBuffer(rider_data))
+	request.Header.Set("Content-Type", "application/json")
+	request.Header.Set("Authorization", s.DriverAPIKey)
+	if err != nil {
+		logrus.WithError(err).Error("error getting drivers info")
+		return nil, err
+	}
 
+	resp, err := http.DefaultClient.Do(request)
 	if err != nil {
 		logrus.WithError(err).Error("error getting drivers info")
 		return nil, err
@@ -69,27 +77,23 @@ func (s *Service) findSuitableDrivers(rider model.GeoPoint) ([]*model.DriverInfo
 	defer resp.Body.Close()
 
 	// parse response
-	var drivers []*model.DriverInfo
+	var drivers []*model.SearchResult
 	err = json.NewDecoder(resp.Body).Decode(&drivers)
 	if err != nil {
 		logrus.WithError(err).Error("error getting drivers info")
 		return nil, err
 	}
+
 	// return suitable drivers
 	return drivers, nil
 
 }
 
-func searchMostSuitable(drivers []*model.DriverInfo) *model.DriverInfo {
+func searchMostSuitable(drivers []*model.SearchResult) *model.SearchResult {
 
-	var mostSuitableDriver *model.DriverInfo
+	var mostSuitableDriver *model.SearchResult
 	var minDistance float64
 	for _, driver := range drivers {
-
-		err := driver.Validate()
-		if err != nil {
-			continue
-		}
 		distance := driver.Distance
 		if mostSuitableDriver == nil || distance < minDistance {
 			minDistance = distance
