@@ -27,6 +27,7 @@ import (
 // API configuration
 type Config struct {
 	SigningSecret string `yaml:"signing_secret"`
+	SearchRadius  int    `yaml:"search_radius"`
 }
 
 // API represents the structure of the API
@@ -56,7 +57,7 @@ func New(cfg *Config, router *mux.Router) (*API, error) {
 	))
 
 	// Endpoint for geoPoints
-	api.Router.HandleFunc("/api/v1/findDriver", api.corsMiddleware(api.logMiddleware(api.authMiddleware(api.FindDriver)))).Methods("POST")
+	api.Router.HandleFunc("/api/v1/match", api.corsMiddleware(api.logMiddleware(api.authMiddleware(api.Match)))).Methods("POST")
 
 	return api, nil
 }
