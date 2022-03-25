@@ -6,7 +6,7 @@ import (
 
 type Provider struct {
 	cfg          *Config
-	matcgService *match.Service
+	matchService *match.Service
 }
 
 func NewProvider(cfg *Config) (*Provider, error) {
@@ -16,7 +16,7 @@ func NewProvider(cfg *Config) (*Provider, error) {
 	}
 	return &Provider{
 		cfg:          cfg,
-		matcgService: matchService,
+		matchService: matchService,
 	}, nil
 }
 
@@ -25,5 +25,5 @@ func (p *Provider) GetConfig() *Config {
 }
 
 func (p *Provider) GetMatchService() *match.Service {
-	return p.matcgService
+	return p.matchService
 }

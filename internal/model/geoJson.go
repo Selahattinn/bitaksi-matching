@@ -10,8 +10,8 @@ var (
 )
 
 type GeoPoint struct {
-	Lat  float64 `json:"lat" default:"-181"`
-	Long float64 `json:"long" default:"-91"`
+	Lat  float64 `json:"lat"`
+	Long float64 `json:"long"`
 }
 
 func NewGeoPoint(lat float64, long float64) *GeoPoint {
