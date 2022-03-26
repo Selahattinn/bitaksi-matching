@@ -3,6 +3,8 @@ package match
 import (
 	"reflect"
 	"testing"
+
+	"github.com/Selahattinn/bitaksi-matching/internal/model"
 )
 
 func TestNewService(t *testing.T) {
@@ -28,6 +30,26 @@ func TestNewService(t *testing.T) {
 			}
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewService() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_searchMostSuitable(t *testing.T) {
+	type args struct {
+		drivers []*model.SearchResult
+	}
+	tests := []struct {
+		name string
+		args args
+		want *model.SearchResult
+	}{
+		{name: "success search", args: args{drivers: []*model.SearchResult{&model.SearchResult{Distance: 1, Driver: model.Driver{ID: 1, Location: model.GeoJson{Type: "Point", Coordinates: []float64{10, 10}}}}, &model.SearchResult{Distance: 14, Driver: model.Driver{ID: 1, Location: model.GeoJson{Type: "Point", Coordinates: []float64{10, 10}}}}}}, want: &model.SearchResult{Distance: 1, Driver: model.Driver{ID: 1, Location: model.GeoJson{Type: "Point", Coordinates: []float64{10, 10}}}}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := searchMostSuitable(tt.args.drivers); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("searchMostSuitable() = %v, want %v", got, tt.want)
 			}
 		})
 	}

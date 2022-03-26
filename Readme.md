@@ -23,6 +23,11 @@
 
 First of all, [download](https://golang.org/dl/) and install **Go**. :)
 
+## For Auth
+Auth middleware controlls jwt validation not expiration.
+
+Dont forget to add your `signing_secret` in `config.yml`
+
 ## For Documentation Creation
 ```bash
 make swagger
