@@ -2,6 +2,6 @@ host: :8080
 api:
   signing_secret: "secret-pass"
 service:
-  max_distance: 15
+  max_distance: 30
   driver_api_addr: "http://localhost:8081/api/v1/search"
   driver_api_key: "matchService"
