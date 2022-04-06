@@ -53,5 +53,5 @@ make test
 After Build
 
 ```bash
-./bin/bitaksi-match
+./bin/bitaksi-matching
 ```
